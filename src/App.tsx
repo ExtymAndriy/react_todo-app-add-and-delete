@@ -71,6 +71,9 @@ export const App: React.FC = () => {
   const visibleTodos = filterTodos(filterStatus);
 
   const deleteTodo = (postId: number) => {
+    // Clear any previous error message when starting a new deletion
+    setErrorMessage(null);
+
     // Add loading state to the todo
     setTodos(currentTodos =>
       currentTodos.map(todo =>
@@ -84,6 +87,8 @@ export const App: React.FC = () => {
         setTodos(currentTodos =>
           currentTodos.filter(todo => todo.id !== postId),
         );
+        // Focus input field after successful deletion
+        inputRef.current?.focus();
       })
       .catch(() => {
         // Remove loading state and show error
@@ -93,10 +98,15 @@ export const App: React.FC = () => {
           ),
         );
         setErrorMessage('Unable to delete a todo');
+        // Focus input field even on error
+        inputRef.current?.focus();
       });
   };
 
   const clearCompleted = () => {
+    // Clear any previous error message when starting a new deletion
+    setErrorMessage(null);
+
     const completedTodos = todos.filter(todo => todo.completed);
 
     // Add loading state to all completed todos
@@ -129,6 +139,9 @@ export const App: React.FC = () => {
         if (hasErrors) {
           setErrorMessage('Unable to delete a todo');
         }
+
+        // Focus input field after clearing completed todos
+        inputRef.current?.focus();
       })
       .catch(() => {
         // Reset loading state on unexpected error
