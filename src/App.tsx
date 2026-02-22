@@ -112,16 +112,16 @@ export const App: React.FC = () => {
 
     Promise.allSettled(completedTodos.map(todo => deleteTodoAPI(todo.id)))
       .then(results => {
-        const fulfilledResults = results.filter(result => result.status === 'fulfilled');
-        const rejectedResults = results.filter(result => result.status === 'rejected');
-
-        const successfulDeletions = fulfilledResults.map((_, index) => completedTodos[index].id);
+        // Визначаємо id тих, які були успішно видалені
+        const deletedIds = completedTodos
+          .filter((_, i) => results[i].status === 'fulfilled')
+          .map(todo => todo.id);
 
         setTodos(currentTodos =>
-          currentTodos.filter(todo => !successfulDeletions.includes(todo.id)),
+          currentTodos.filter(todo => !deletedIds.includes(todo.id))
         );
 
-        if (rejectedResults.length > 0) {
+        if (results.some(r => r.status === 'rejected')) {
           setErrorMessage('Unable to delete a todo');
         }
 
