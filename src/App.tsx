@@ -71,10 +71,8 @@ export const App: React.FC = () => {
   const visibleTodos = filterTodos(filterStatus);
 
   const deleteTodo = (postId: number) => {
-    // Clear any previous error message when starting a new deletion
     setErrorMessage(null);
 
-    // Add loading state to the todo
     setTodos(currentTodos =>
       currentTodos.map(todo =>
         todo.id === postId ? { ...todo, loading: true } : todo,
@@ -83,33 +81,27 @@ export const App: React.FC = () => {
 
     deleteTodoAPI(postId)
       .then(() => {
-        // Remove the todo on success
         setTodos(currentTodos =>
           currentTodos.filter(todo => todo.id !== postId),
         );
-        // Focus input field after successful deletion
         inputRef.current?.focus();
       })
       .catch(() => {
-        // Remove loading state and show error
         setTodos(currentTodos =>
           currentTodos.map(todo =>
             todo.id === postId ? { ...todo, loading: false } : todo,
           ),
         );
         setErrorMessage('Unable to delete a todo');
-        // Focus input field even on error
         inputRef.current?.focus();
       });
   };
 
   const clearCompleted = () => {
-    // Clear any previous error message when starting a new deletion
     setErrorMessage(null);
 
     const completedTodos = todos.filter(todo => todo.completed);
 
-    // Add loading state to all completed todos
     setTodos(currentTodos =>
       currentTodos.map(todo =>
         completedTodos.some(completed => completed.id === todo.id)
@@ -118,33 +110,27 @@ export const App: React.FC = () => {
       ),
     );
 
-    // Delete all completed todos in parallel
     Promise.allSettled(completedTodos.map(todo => deleteTodoAPI(todo.id)))
       .then(results => {
-        // Track which deletions were successful
         const successfulDeletions = results
           .map((result, index) =>
             result.status === 'fulfilled' ? completedTodos[index].id : null,
           )
           .filter((id): id is number => id !== null);
 
-        // Remove successfully deleted todos
         setTodos(currentTodos =>
           currentTodos.filter(todo => !successfulDeletions.includes(todo.id)),
         );
 
-        // Show error if any deletion failed
         const hasErrors = results.some(result => result.status === 'rejected');
 
         if (hasErrors) {
           setErrorMessage('Unable to delete a todo');
         }
 
-        // Focus input field after clearing completed todos
         inputRef.current?.focus();
       })
       .catch(() => {
-        // Reset loading state on unexpected error
         setTodos(currentTodos =>
           currentTodos.map(todo =>
             completedTodos.some(completed => completed.id === todo.id)
@@ -179,7 +165,6 @@ export const App: React.FC = () => {
       return;
     }
 
-    // Create temporary todo
     const newTempTodo: Todo = {
       id: 0,
       userId: USER_ID,
