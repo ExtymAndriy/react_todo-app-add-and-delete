@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Todo } from '../types/Todo';
 
 type Props = {
@@ -13,7 +14,10 @@ export const TodoItem: React.FC<Props> = ({
   onToggleComplete,
 }) => {
   return (
-    <div data-cy="Todo" className={todo.completed ? 'todo completed' : 'todo'}>
+    <div
+      data-cy="Todo"
+      className={classNames('todo', { completed: todo.completed })}
+    >
       <label className="todo__status-label">
         <input
           type="checkbox"
@@ -40,7 +44,9 @@ export const TodoItem: React.FC<Props> = ({
 
       <div
         data-cy="TodoLoader"
-        className={todo.loading ? 'modal overlay is-active' : 'modal overlay'}
+        className={classNames('modal', 'overlay', {
+          'is-active': todo.loading,
+        })}
       >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />

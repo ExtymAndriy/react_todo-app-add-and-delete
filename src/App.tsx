@@ -112,19 +112,16 @@ export const App: React.FC = () => {
 
     Promise.allSettled(completedTodos.map(todo => deleteTodoAPI(todo.id)))
       .then(results => {
-        const successfulDeletions = results
-          .map((result, index) =>
-            result.status === 'fulfilled' ? completedTodos[index].id : null,
-          )
-          .filter((id): id is number => id !== null);
+        const fulfilledResults = results.filter(result => result.status === 'fulfilled');
+        const rejectedResults = results.filter(result => result.status === 'rejected');
+
+        const successfulDeletions = fulfilledResults.map((_, index) => completedTodos[index].id);
 
         setTodos(currentTodos =>
           currentTodos.filter(todo => !successfulDeletions.includes(todo.id)),
         );
 
-        const hasErrors = results.some(result => result.status === 'rejected');
-
-        if (hasErrors) {
+        if (rejectedResults.length > 0) {
           setErrorMessage('Unable to delete a todo');
         }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
+import classNames from 'classnames';
 import { Status } from '../types/StatusType';
 
 type Props = {
@@ -27,7 +28,9 @@ export const Footer: React.FC<Props> = ({
       <nav className="filter" data-cy="Filter">
         <button
           type="button"
-          className={`filter__link ${filterStatus === Status.All ? 'selected' : ''}`}
+          className={classNames('filter__link', {
+            selected: filterStatus === Status.All,
+          })}
           data-cy="FilterLinkAll"
           onClick={() => setFilterStatus(Status.All)}
         >
@@ -36,9 +39,9 @@ export const Footer: React.FC<Props> = ({
 
         <button
           type="button"
-          className={`filter__link ${
-            filterStatus === Status.Active ? 'selected' : ''
-          }`}
+          className={classNames('filter__link', {
+            selected: filterStatus === Status.Active,
+          })}
           data-cy="FilterLinkActive"
           onClick={() => setFilterStatus(Status.Active)}
         >
@@ -47,9 +50,9 @@ export const Footer: React.FC<Props> = ({
 
         <button
           type="button"
-          className={`filter__link ${
-            filterStatus === Status.Completed ? 'selected' : ''
-          }`}
+          className={classNames('filter__link', {
+            selected: filterStatus === Status.Completed,
+          })}
           data-cy="FilterLinkCompleted"
           onClick={() => setFilterStatus(Status.Completed)}
         >
